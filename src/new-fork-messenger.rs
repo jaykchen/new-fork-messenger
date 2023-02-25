@@ -21,7 +21,7 @@ pub async fn run() -> anyhow::Result<()> {
 }
 
 async fn handler(payload: EventPayload) {
-    if let EventPayload::ForkEvent(e) = payload {
+    if let EventPayload::UnknownEvent(e) = payload {
         let text = format!("{:?}", e);
         send_message_to_channel("ik8", "general", text);
 
