@@ -13,13 +13,14 @@ pub async fn run() -> anyhow::Result<()> {
 async fn handler(payload: EventPayload) {
     if let EventPayload::ForkEvent(e) = payload {
         let forkee = e.forkee;
-        send_message_to_channel("ik8", "general", forkee.name);
-        send_message_to_channel("ik8", "general", forkee.url.to_string());
-        send_message_to_channel(
-            "ik8",
-            "general",
-            forkee.full_name.expect("no full_name obtained"),
-        );
+        let text = format!("{:?}", forkee);
+        send_message_to_channel("ik8", "general", text);
+        // send_message_to_channel("ik8", "general", forkee.url.to_string());
+        // send_message_to_channel(
+        //     "ik8",
+        //     "general",
+        //     forkee.full_name.expect("no full_name obtained"),
+        // );
 
         // let forkee_name = forkee.owner.unwrap().login;
 
