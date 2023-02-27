@@ -6,16 +6,6 @@ use slack_flows::send_message_to_channel;
 #[tokio::main(flavor = "current_thread")]
 pub async fn run() -> anyhow::Result<()> {
     listen_to_event("jaykchen", "vitesse-lite", vec!["fork"], handler).await;
-    // let octo = get_octo(None);
-    // let repo = octo.repos("jaykchen", "vitesse-lite").get().await?;
-
-    // let full_name = repo.full_name.unwrap();
-    // let stargazers_count = repo.stargazers_count.unwrap();
-    // let text = format!(
-    //     "Congratulations on your repository {} with {} stars.",
-    //     full_name, stargazers_count
-    // );
-    // send_message_to_channel("jaykchen", "ik8", text);
 
     Ok(())
 }
@@ -37,5 +27,10 @@ async fn handler(payload: EventPayload) {
         // if stargazers_count % 10 == 0 {
         //     send_message_to_channel("jaykchen", "ik8", text)
         // }
+    } else {
+        let text = format!("{:?}", payload);
+
+        send_message_to_channel("ik8", "general", text);
+        send_message_to_channel("ik8", "general", "payload failed".to_string());
     }
 }
