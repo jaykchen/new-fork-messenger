@@ -11,28 +11,20 @@ pub async fn run() -> anyhow::Result<()> {
 }
 
 async fn handler(payload: EventPayload) {
-    if let EventPayload::ForkEvent(e) = payload {
-        let forkee = e.forkee;
-        let text = format!("{:?}", forkee);
+    if let EventPayload::UnknownEvent(e) = payload {
+        let sender = e.get("sender").expect("sender not obtained");
+        let forkee_name = sender.get("login").expect("forkee_name not obtained");
+        let html_url = sender.get("html_url").expect("html_url not obtained");
+
+        let repo = e.get("repository").expect("repo not obtained");
+        let full_name = repo.get("full_name").expect("full_name not obtained");
+        let visibility = repo.get("visibility").expect("visibility not obtained");
+
+        let text = format!(
+            "{} forked your {}({})!\n{}",
+            forkee_name, full_name, visibility, html_url
+        );
+
         send_message_to_channel("ik8", "general", text);
-        // send_message_to_channel("ik8", "general", forkee.url.to_string());
-        // send_message_to_channel(
-        //     "ik8",
-        //     "general",
-        //     forkee.full_name.expect("no full_name obtained"),
-        // );
-
-        // let forkee_name = forkee.owner.unwrap().login;
-
-        // let text = format!(
-        //     "{} forked your {}({})!\n{}",
-        //     forkee_name, repo.full_name, repo.visibility, repo.html_url
-        // );
-
-        // send_message_to_channel("jaykchen", "ik8", text.clone());
-
-        // if stargazers_count % 10 == 0 {
-        //     send_message_to_channel("jaykchen", "ik8", text)
-        // }
     }
 }
