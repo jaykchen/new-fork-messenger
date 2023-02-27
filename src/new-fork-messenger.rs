@@ -1,5 +1,5 @@
 use anyhow::{Error, Result};
-use github_flows::{listen_to_event, EventPayload};
+use github_flows::{listen_to_event, octocrab::models::Repository, EventPayload};
 use slack_flows::send_message_to_channel;
 
 #[no_mangle]
@@ -12,8 +12,14 @@ pub async fn run() -> anyhow::Result<()> {
 
 async fn handler(payload: EventPayload) {
     if let EventPayload::ForkEvent(e) = payload {
-        let text = format!("{:?}", e);
-        send_message_to_channel("ik8", "general", text);
+        let forkee = e.forkee;
+        send_message_to_channel("ik8", "general", forkee.name);
+        send_message_to_channel("ik8", "general", forkee.url.to_string());
+        send_message_to_channel(
+            "ik8",
+            "general",
+            forkee.full_name.expect("no full_name obtained"),
+        );
 
         // let forkee_name = forkee.owner.unwrap().login;
 
@@ -27,10 +33,5 @@ async fn handler(payload: EventPayload) {
         // if stargazers_count % 10 == 0 {
         //     send_message_to_channel("jaykchen", "ik8", text)
         // }
-    } else {
-        let text = format!("{:?}", payload);
-
-        send_message_to_channel("ik8", "general", text);
-        send_message_to_channel("ik8", "general", "payload failed".to_string());
     }
 }
